@@ -21,7 +21,8 @@
 
 name = "cf-workers-status-page"
 # Flareact 的标准入口
-main = "node_modules/flareact/worker/index.js"  
+#main = "node_modules/flareact/worker/index.js"
+main = "index.js"
 # 更新兼容日期
 compatibility_date = "2024-03-20"               
 
