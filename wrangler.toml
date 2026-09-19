@@ -1,18 +1,42 @@
-main = "index.js"
+#main = "index.js"
+#name = "cf-workers-status-page"
+#workers_dev = true
+#account_id = ""
+#type = "webpack"
+#webpack_config = "node_modules/flareact/webpack"
+#compatibility_date = "2021-07-23"
+
+#[triggers]
+#crons = ["* * * * *"]
+
+# uncomment and adjust following if you are not using GitHub Actions
+#[env.production]
+#[[kv_namespaces]]
+#binding = "KV_STATUS_PAGE"
+#id = "KV_ID_PLACEHOLDER"
+#zone_id="xxx"
+#route="xxx"
+
+
+
 name = "cf-workers-status-page"
-workers_dev = true
-account_id = ""
-type = "webpack"
-webpack_config = "node_modules/flareact/webpack"
-compatibility_date = "2021-07-23"
+# Flareact 的标准入口
+main = "node_modules/flareact/worker/index.js"  
+# 更新兼容日期
+compatibility_date = "2024-03-20"               
 
 [triggers]
 crons = ["* * * * *"]
 
-# uncomment and adjust following if you are not using GitHub Actions
+# 核心修复：添加 esbuild 规则，允许加载 .yaml 文件作为文本
+[[rules]]
+type = "text"
+globs = ["**/*.yaml"]
+fall_through = true
+
 [env.production]
-[[kv_namespaces]]
+name = "cf-workers-status-page-production"
+
+[[env.production.kv_namespaces]]
 binding = "KV_STATUS_PAGE"
 id = "KV_ID_PLACEHOLDER"
-#zone_id="xxx"
-#route="xxx"
