@@ -1,6 +1,5 @@
 import { Store } from 'laco'
 import { useStore } from 'laco-react'
-// import Head from 'flareact/head'
 import { Helmet } from 'react-helmet-async'
 
 import { getKVMonitors, useKeyPress } from '../src/functions/helpers'
