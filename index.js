@@ -1,8 +1,3 @@
-// 必须放在所有 import 的最前面，用于修复 Cloudflare Workers 中缺少 global 的问题
-if (typeof global === 'undefined') {
-  var global = globalThis;
-}
-
 import { handleEvent } from 'flareact'
 import { processCronTrigger } from './src/functions/cronTrigger'
 
