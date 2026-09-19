@@ -30,7 +30,7 @@ crons = ["* * * * *"]
 
 # 核心修复：添加 esbuild 规则，允许加载 .yaml 文件作为文本
 [[rules]]
-type = "text"
+type = "Text"
 globs = ["**/*.yaml"]
 fall_through = true
 
