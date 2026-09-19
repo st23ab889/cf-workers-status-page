@@ -1,6 +1,6 @@
 import { Store } from 'laco'
 import { useStore } from 'laco-react'
-import { Helmet } from 'react-helmet-async'
+import Head from 'flareact/head'
 
 import { getKVMonitors, useKeyPress } from '../src/functions/helpers'
 import config from '../config.yaml'
@@ -43,7 +43,7 @@ export default function Index({ config, kvMonitors, kvMonitorsLastUpdate }) {
 
   return (
     <div className="min-h-screen">
-      <Helmet>
+      <Head>
         <title>{config.settings.title}</title>
         <link rel="stylesheet" href="./style.css" />
         <script>
@@ -66,7 +66,7 @@ export default function Index({ config, kvMonitors, kvMonitorsLastUpdate }) {
           })()
           `}
         </script>
-      </Helmet>
+      </Head>
       <div className="container mx-auto px-4">
         <div className="flex flex-row justify-between items-center p-4">
           <div className="flex flex-row items-center">
