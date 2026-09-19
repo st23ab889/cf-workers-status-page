@@ -24,8 +24,7 @@ name = "cf-workers-status-page"
 # main = "node_modules/flareact/worker/index.js"
 main = "index.js"
 # 更新兼容日期
-compatibility_date = "2024-03-20"        
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-03-20"
 
 [triggers]
 crons = ["* * * * *"]
@@ -36,8 +35,10 @@ type = "Text"
 globs = ["**/*.yaml"]
 fallthrough = true
 
-[js_env]
-global = "globalThis"
+[build]
+command = ""
+[build.upload]
+format = "modules"
 
 [env.production]
 name = "cf-workers-status-page-production"
