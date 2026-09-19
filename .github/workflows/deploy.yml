@@ -43,7 +43,10 @@ jobs:
 
         # 截取：只保留第一个 [ 之后的内容，重组纯净JSON
         RAW_JSON=$(echo "$RAW_ALL" | sed -n '/^\[/,/^]/p')
-
+        echo "=== 清洗后的 wrangler kv namespace list 的内容 ==="
+        echo "$RAW_ALL"
+        echo "=== 清晰后的内容打印完毕 ==="
+        
         KV_NAMESPACE_ID=$(echo "$RAW_JSON" | jq -r '.[] | select(.title=="production-KV_STATUS_PAGE") | .id')
         echo "KV_NAMESPACE_ID = >${KV_NAMESPACE_ID}<"
         
