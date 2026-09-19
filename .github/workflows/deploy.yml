@@ -35,11 +35,7 @@ jobs:
         else
           echo "KV命名空间已存在，跳过创建"
         fi
-        export KV_NAMESPACE_ID=$(wrangler kv namespace list --json 2>/dev/null | node -e '
-            const data = JSON.parse(fs.readFileSync(0, "utf-8"));
-            const item = data.find(x => x.title === "KV_STATUS_PAGE" || x.title?.endsWith("_KV_STATUS_PAGE"));
-            if (item) console.log(item.id);
-          ')
+        export KV_NAMESPACE_ID=$(wrangler kv namespace list --json 2>/dev/null | jq -r 'first(.[]? | select(.title | test("KV_STATUS_PAGE"))) | .id // empty')
         echo "KV_NAMESPACE_ID = >${KV_NAMESPACE_ID}<"
         if [ -z "$KV_NAMESPACE_ID" ];then
           echo "ERROR: 获取KV ID失败"
