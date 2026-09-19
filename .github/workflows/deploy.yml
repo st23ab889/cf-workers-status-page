@@ -35,7 +35,7 @@ jobs:
         else
           echo "KV命名空间已存在，跳过创建"
         fi
-        export KV_NAMESPACE_ID=$(wrangler kv namespace list | grep "KV_STATUS_PAGE" | awk '{print $2}')
+        export KV_NAMESPACE_ID=$(wrangler kv namespace list 2>/dev/null | grep "KV_STATUS_PAGE" | grep -oE '[0-9a-f]{32}' | head -n1)
         echo "KV_NAMESPACE_ID = >${KV_NAMESPACE_ID}<"
         if [ -z "$KV_NAMESPACE_ID" ];then
           echo "ERROR: 获取KV ID失败"
