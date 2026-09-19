@@ -64,13 +64,14 @@ jobs:
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-        NODE_OPTIONS: "--require data:text/javascript,globalThis.global=globalThis;"
         SECRET_SLACK_WEBHOOK_URL: ${{ secrets.SECRET_SLACK_WEBHOOK_URL }}
         SECRET_TELEGRAM_API_TOKEN: ${{ secrets.SECRET_TELEGRAM_API_TOKEN }}
         SECRET_TELEGRAM_CHAT_ID: ${{ secrets.SECRET_TELEGRAM_CHAT_ID }}
         SECRET_DISCORD_WEBHOOK_URL: ${{ secrets.SECRET_DISCORD_WEBHOOK_URL }}
       run: |
-        # 确保全局安装的 wrangler 可用，并直接通过命令部署
-        npx wrangler deploy --env production
+        # 1. 在工作目录临时生成一个全局变量 polyfill 文件
+        echo "globalThis.global = globalThis;" > global-polyfill.js
+        # 2. 通过 NODE_OPTIONS 预加载该文件，然后执行部署
+        NODE_OPTIONS="--require ./global-polyfill.js" npx wrangler deploy --env production
     - name: Post kv-gc
       run: yarn kv-gc
