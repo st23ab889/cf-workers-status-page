@@ -1,3 +1,4 @@
+main = "index.js"
 name = "cf-workers-status-page"
 workers_dev = true
 account_id = ""
