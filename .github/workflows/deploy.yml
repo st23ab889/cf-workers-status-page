@@ -24,8 +24,8 @@ jobs:
         NODE_ENV: production
     - name: Prepare KV namespace
       env:
-        CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-        CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
       run: |
         npm install -g wrangler
         wrangler kv namespace create KV_STATUS_PAGE --env production || true
