@@ -35,11 +35,6 @@ type = "Text"
 globs = ["**/*.yaml"]
 fallthrough = true
 
-[build]
-command = ""
-[build.upload]
-format = "modules"
-
 [env.production]
 name = "cf-workers-status-page-production"
 
