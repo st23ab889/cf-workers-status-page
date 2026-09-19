@@ -42,8 +42,7 @@ jobs:
         echo "=== 原始内容打印完毕 ==="
 
         # 截取：只保留第一个 [ 之后的内容，重组纯净JSON
-        RAW_JSON="${RAW_ALL#*[}"
-        RAW_JSON="[$RAW_JSON]"
+        RAW_JSON=$(echo "$RAW_ALL" | sed -n '/^\[/,/^]/p')
 
         KV_NAMESPACE_ID=$(echo "$RAW_JSON" | jq -r '.[] | select(.title=="production-KV_STATUS_PAGE") | .id')
         echo "KV_NAMESPACE_ID = >${KV_NAMESPACE_ID}<"
