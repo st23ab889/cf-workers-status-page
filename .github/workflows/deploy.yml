@@ -19,6 +19,23 @@ jobs:
       with:
         node-version: 20
     - run: yarn install   
+    # ==================== 核心修改：必须在 yarn build 之前打补丁 ====================
+    - name: Patch react-helmet for Cloudflare Workers
+      run: |
+        HELMET_FILE="node_modules/react-helmet/es/Helmet.js"
+        if [ -f "$HELMET_FILE" ]; then
+          echo "Found react-helmet, injecting global polyfill..."
+          sed -i '1i if (typeof global === "undefined") { var global = globalThis; }' "$HELMET_FILE"
+        else
+          echo "Helmet.js not found, skipping patch."
+        fi
+
+        FLAREACT_WORKER="node_modules/flareact/src/worker/index.js"
+        if [ -f "$FLAREACT_WORKER" ]; then
+          echo "Patching flareact worker index..."
+          sed -i '1i if (typeof process === "undefined") { var process = { env: { NODE_ENV: "production" } }; }' "$FLAREACT_WORKER"
+        fi        
+    # ==============================================================================    
     - run: yarn build
       env:
         NODE_ENV: production
