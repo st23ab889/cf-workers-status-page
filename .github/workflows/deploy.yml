@@ -19,6 +19,18 @@ jobs:
       with:
         node-version: 20
     - run: yarn install
+    # ==================== 核心新增：强行修复 react-helmet 的 global 缺失问题 ====================
+    - name: Patch react-helmet for Cloudflare Workers
+      run: |
+        HELMET_FILE="node_modules/react-helmet/es/Helmet.js"
+        if [ -f "$HELMET_FILE" ]; then
+          echo "Found react-helmet, injecting global polyfill..."
+          # 在文件最顶部强行插入 global 兼容代码
+          sed -i '1i if (typeof global === "undefined") { var global = globalThis; }' "$HELMET_FILE"
+        else
+          echo "Helmet.js not found, skipping patch."
+        fi
+    # ========================================================================================    
     - run: yarn build
       env:
         NODE_ENV: production
