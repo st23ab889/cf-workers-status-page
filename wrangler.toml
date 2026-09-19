@@ -35,6 +35,9 @@ type = "Text"
 globs = ["**/*.yaml"]
 fallthrough = true
 
+[js_env]
+global = "globalThis"
+
 [env.production]
 name = "cf-workers-status-page-production"
 
