@@ -18,19 +18,7 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: 20
-    - run: yarn install
-    # ==================== 核心新增：强行修复 react-helmet 的 global 缺失问题 ====================
-    - name: Patch react-helmet for Cloudflare Workers
-      run: |
-        HELMET_FILE="node_modules/react-helmet/es/Helmet.js"
-        if [ -f "$HELMET_FILE" ]; then
-          echo "Found react-helmet, injecting global polyfill..."
-          # 在文件最顶部强行插入 global 兼容代码
-          sed -i '1i if (typeof global === "undefined") { var global = globalThis; }' "$HELMET_FILE"
-        else
-          echo "Helmet.js not found, skipping patch."
-        fi
-    # ========================================================================================    
+    - run: yarn install   
     - run: yarn build
       env:
         NODE_ENV: production
@@ -73,15 +61,16 @@ jobs:
         [ -z "$SECRET_TELEGRAM_CHAT_ID" ] && SECRET_TELEGRAM_CHAT_ID="default-gh-action-secret" || true
         [ -z "$SECRET_DISCORD_WEBHOOK_URL" ] && SECRET_DISCORD_WEBHOOK_URL="default-gh-action-secret" || true
     - name: Publish to Cloudflare Workers
-      uses: cloudflare/wrangler-action@v3
-      with:
-        apiToken: ${{ secrets.CF_API_TOKEN }}
-        accountId: ${{ secrets.CF_ACCOUNT_ID }}
-        environment: production
       env:
-        SECRET_SLACK_WEBHOOK_URL: ${{secrets.SECRET_SLACK_WEBHOOK_URL}}
-        SECRET_TELEGRAM_API_TOKEN: ${{secrets.SECRET_TELEGRAM_API_TOKEN}}
-        SECRET_TELEGRAM_CHAT_ID: ${{secrets.SECRET_TELEGRAM_CHAT_ID}}
-        SECRET_DISCORD_WEBHOOK_URL: ${{secrets.SECRET_DISCORD_WEBHOOK_URL}}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        NODE_OPTIONS: "--require data:text/javascript,globalThis.global=globalThis;"
+        SECRET_SLACK_WEBHOOK_URL: ${{ secrets.SECRET_SLACK_WEBHOOK_URL }}
+        SECRET_TELEGRAM_API_TOKEN: ${{ secrets.SECRET_TELEGRAM_API_TOKEN }}
+        SECRET_TELEGRAM_CHAT_ID: ${{ secrets.SECRET_TELEGRAM_CHAT_ID }}
+        SECRET_DISCORD_WEBHOOK_URL: ${{ secrets.SECRET_DISCORD_WEBHOOK_URL }}
+      run: |
+        # 确保全局安装的 wrangler 可用，并直接通过命令部署
+        npx wrangler deploy --env production
     - name: Post kv-gc
       run: yarn kv-gc
