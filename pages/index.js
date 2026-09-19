@@ -1,3 +1,9 @@
+// 必须放在所有代码的最顶部：解决 Cloudflare Workers 中缺少 global 的问题
+if (typeof global === 'undefined') {
+  var global = globalThis;
+}
+
+
 import { Store } from 'laco'
 import { useStore } from 'laco-react'
 import Head from 'flareact/head'
