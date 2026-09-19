@@ -28,13 +28,17 @@ jobs:
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
       run: |
         npm install -g wrangler
-        wrangler kv namespace create KV_STATUS_PAGE --env production || true
-        wrangler kv namespace list --json > kv_list.json
-        cat kv_list.json
-        export KV_NAMESPACE_ID=$(node -pe "const list=JSON.parse(fs.readFileSync('kv_list.json'));const item=list.find(x=>x.title.includes('KV_STATUS_PAGE'));item?item.id:''")
+        KV_EXIST=$(wrangler kv namespace list | grep "KV_STATUS_PAGE" || true)
+        if [ -z "$KV_EXIST" ];then
+          echo "KV命名空间不存在，开始创建"
+          wrangler kv namespace create KV_STATUS_PAGE --env production
+        else
+          echo "KV命名空间已存在，跳过创建"
+        fi
+        export KV_NAMESPACE_ID=$(wrangler kv namespace list | grep "KV_STATUS_PAGE" | awk '{print $2}')
         echo "KV_NAMESPACE_ID = >${KV_NAMESPACE_ID}<"
         if [ -z "$KV_NAMESPACE_ID" ];then
-          echo "ERROR: KV_NAMESPACE_ID 为空，获取KV命名空间失败"
+          echo "ERROR: 获取KV ID失败"
           exit 1
         fi
         sed -i 's/KV_ID_PLACEHOLDER/'"${KV_NAMESPACE_ID}"'/g' wrangler.toml
